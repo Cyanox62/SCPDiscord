@@ -5,6 +5,8 @@ using SCPDiscord.DataObjects;
 using SCPDiscord.DataObjects.Events;
 using System.Linq;
 using System.Collections.Generic;
+using Exiled.Permissions.Extensions;
+using UnityEngine;
 
 namespace SCPDiscord
 {
@@ -54,7 +56,7 @@ namespace SCPDiscord
 			});
 		}
 
-		public void OnPlayerJoin(JoinedEventArgs ev)
+		public void OnPlayerVerified(VerifiedEventArgs ev)
 		{
 			Timing.CallDelayed(1f, () => tcp.SendData(new RoleSync
 			{
@@ -190,14 +192,13 @@ namespace SCPDiscord
 				command = cmd
 			});
 
-			/*string cmd = ev.Command.ToLower();
-
+			cmd = cmd.ToLower();
 			if ((cmd == "silentrestart" || cmd == "sr") && ev.Sender.CheckPermission("scpd.sr"))
 			{
-				ev.Allow = false;
+				ev.IsAllowed = false;
 				silentRestart = !silentRestart;
-				ev.Sender.RAMessage(silentRestart ? "Server set to silently restart next round." : "Server silent restart cancelled.", true);
-			}*/
+				ev.Sender.RemoteAdminMessage(silentRestart ? "Server set to silently restart next round." : "Server silent restart cancelled.", true);
+			}
 		}
 
 		public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
@@ -229,11 +230,11 @@ namespace SCPDiscord
 				eventName = "RoundRestart"
 			});
 
-			if (silentRestart && SCPDiscord.instance.Config.LocalAdminPath != string.Empty && SCPDiscord.instance.Config.ServerPrefix != string.Empty)
+			if (silentRestart)
 			{
 				Timing.CallDelayed(2.5f, () =>
 				{
-					tcp.SendData(new Restart());
+					Server.Restart();
 				});
 				silentRestart = false;
 			}

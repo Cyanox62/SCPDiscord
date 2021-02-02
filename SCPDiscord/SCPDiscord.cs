@@ -85,7 +85,7 @@ namespace SCPDiscord
 
 			Exiled.Events.Handlers.Map.Decontaminating += ev.OnDecontamination;
 
-			Exiled.Events.Handlers.Player.Joined += ev.OnPlayerJoin;
+			Exiled.Events.Handlers.Player.Verified += ev.OnPlayerVerified;
 			Exiled.Events.Handlers.Player.ChangingRole += ev.OnSetClass;
 			Exiled.Events.Handlers.Player.DroppingItem += ev.OnDropItem;
 			Exiled.Events.Handlers.Player.PickingUpItem += ev.OnPickupItem;
@@ -120,7 +120,7 @@ namespace SCPDiscord
 
 			Exiled.Events.Handlers.Map.Decontaminating -= ev.OnDecontamination;
 
-			Exiled.Events.Handlers.Player.Joined -= ev.OnPlayerJoin;
+			Exiled.Events.Handlers.Player.Verified -= ev.OnPlayerVerified;
 			Exiled.Events.Handlers.Player.ChangingRole -= ev.OnSetClass;
 			Exiled.Events.Handlers.Player.DroppingItem -= ev.OnDropItem;
 			Exiled.Events.Handlers.Player.PickingUpItem -= ev.OnPickupItem;
