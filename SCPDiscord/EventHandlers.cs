@@ -169,8 +169,8 @@ namespace SCPDiscord
 
 		public void OnGrenadeThrown(ThrowingItemEventArgs ev)
 		{
-			if (ev.Item.Type == Exiled.API.Enums.ItemType.GrenadeFlash || ev.Item.Type == Exiled.API.Enums.ItemType.GrenadeFlash 
-				|| ev.Item.Type == Exiled.API.Enums.ItemType.Scp018)
+			if (ev.Item.Type == ItemType.GrenadeFlash || ev.Item.Type == ItemType.GrenadeHE 
+				|| ev.Item.Type == ItemType.SCP018)
 			{
 				tcp.SendData(new PlayerParam
 				{
