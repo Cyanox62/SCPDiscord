@@ -14,7 +14,7 @@ namespace SCPDiscord
 	{
 		public static Tcp tcp;
 
-		private static bool silentRestart;
+		internal static bool silentRestart;
 
 		private Dictionary<Exiled.API.Features.Player, RoleType> roles = new Dictionary<Exiled.API.Features.Player, RoleType>();
 
@@ -22,7 +22,7 @@ namespace SCPDiscord
 		{
 			//Configs.ReloadConfigs();
 
-			tcp = new Tcp("127.0.0.1", SCPDiscord.instance.Config.Port);
+			tcp = new Tcp(SCPDiscord.instance.Config.Address, SCPDiscord.instance.Config.Port);
 			tcp.Init();
 		}
 
@@ -94,7 +94,7 @@ namespace SCPDiscord
 			{
 				eventName = "DropItem",
 				player = PlyToUser(ev.Player),
-				param = Conversions.items.ContainsKey(ev.Item.id) ? Conversions.items[ev.Item.id] : ev.Item.id.ToString()
+				param = Conversions.items.ContainsKey(ev.Item.Type) ? Conversions.items[ev.Item.Type] : ev.Item.Type.ToString()
 			});
 		}
 
@@ -104,7 +104,7 @@ namespace SCPDiscord
 			{
 				eventName = "PickupItem",
 				player = PlyToUser(ev.Player),
-				param = Conversions.items.ContainsKey(ev.Pickup.ItemId) ? Conversions.items[ev.Pickup.ItemId] : ev.Pickup.ItemId.ToString()
+				param = Conversions.items.ContainsKey(ev.Pickup.Type) ? Conversions.items[ev.Pickup.Type] : ev.Pickup.Type.ToString()
 			});
 		}
 
@@ -142,10 +142,10 @@ namespace SCPDiscord
 					victim = PlyToUser(ev.Target),
 					attacker = PlyToUser(ev.Killer),
 					damage = (int)ev.HitInformations.Amount,
-					weapon = ev.HitInformations.GetDamageName().ToString()
+					weapon = ev.HitInformations.Tool.ToString()
 				};
 
-				DamageTypes.DamageType type = ev.HitInformations.GetDamageType();
+				DamageTypes.DamageType type = ev.HitInformations.Tool;
 				if (type == DamageTypes.Tesla) data.eventName += "Tesla";
 				else if (type == DamageTypes.Decont) data.eventName += "Decont";
 				else if (type == DamageTypes.Falldown) data.eventName += "Fall";
@@ -167,51 +167,55 @@ namespace SCPDiscord
 			});
 		}
 
-		public void OnGrenadeThrown(ThrowingGrenadeEventArgs ev)
+		public void OnGrenadeThrown(ThrowingItemEventArgs ev)
 		{
-			tcp.SendData(new PlayerParam
+			if (ev.Item.Type == Exiled.API.Enums.ItemType.GrenadeFlash || ev.Item.Type == Exiled.API.Enums.ItemType.GrenadeFlash 
+				|| ev.Item.Type == Exiled.API.Enums.ItemType.Scp018)
 			{
-				eventName = "GrenadeThrown",
-				player = PlyToUser(ev.Player),
-				param = Conversions.grenades[ev.Type]
-			});
-		}
-
-		public void OnRACommand(SendingRemoteAdminCommandEventArgs ev)
-		{
-			string cmd = ev.Name;
-			foreach (string arg in ev.Arguments) cmd += $" {arg}";
-			tcp.SendData(new Command
-			{
-				eventName = "RACommand",
-				sender = ev.Sender != null ? PlyToUser(ev.Sender) : new User
+				tcp.SendData(new PlayerParam
 				{
-					name = "Server",
-					userid = ""
-				},
-				command = cmd
-			});
-
-			cmd = cmd.ToLower();
-			if ((cmd == "silentrestart" || cmd == "sr") && ev.Sender.CheckPermission("scpd.sr"))
-			{
-				ev.IsAllowed = false;
-				silentRestart = !silentRestart;
-				ev.Sender.RemoteAdminMessage(silentRestart ? "Server set to silently restart next round." : "Server silent restart cancelled.", true);
+					eventName = "GrenadeThrown",
+					player = PlyToUser(ev.Player),
+					param = Conversions.grenades[ev.Item.Type]
+				});
 			}
 		}
 
-		public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
-		{
-			string cmd = ev.Name;
-			foreach (string arg in ev.Arguments) cmd += $" {arg}";
-			tcp.SendData(new Command
-			{
-				eventName = "ConsoleCommand",
-				sender = PlyToUser(ev.Player),
-				command = cmd
-			});
-		}
+		//public void OnRACommand(SendingRemoteAdminCommandEventArgs ev)
+		//{
+		//	string cmd = ev.Name;
+		//	foreach (string arg in ev.Arguments) cmd += $" {arg}";
+		//	tcp.SendData(new Command
+		//	{
+		//		eventName = "RACommand",
+		//		sender = ev.Sender != null ? PlyToUser(ev.Sender) : new User
+		//		{
+		//			name = "Server",
+		//			userid = ""
+		//		},
+		//		command = cmd
+		//	});
+
+		//	cmd = cmd.ToLower();
+		//	if ((cmd == "silentrestart" || cmd == "sr") && ev.Sender.CheckPermission("scpd.sr"))
+		//	{
+		//		ev.IsAllowed = false;
+		//		silentRestart = !silentRestart;
+		//		ev.Sender.RemoteAdminMessage(silentRestart ? "Server set to silently restart next round." : "Server silent restart cancelled.", true);
+		//	}
+		//}
+
+		//public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
+		//{
+		//	string cmd = ev.Name;
+		//	foreach (string arg in ev.Arguments) cmd += $" {arg}";
+		//	tcp.SendData(new Command
+		//	{
+		//		eventName = "ConsoleCommand",
+		//		sender = PlyToUser(ev.Player),
+		//		command = cmd
+		//	});
+		//}
 
 		public void OnPreAuth(PreAuthenticatingEventArgs ev)
 		{

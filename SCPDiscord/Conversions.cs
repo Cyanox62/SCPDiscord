@@ -5,47 +5,49 @@ namespace SCPDiscord
 {
 	public static class Conversions
 	{
-		public static Dictionary<ItemType, string> items = new Dictionary<ItemType, string>()
+		public static Dictionary<Exiled.API.Enums.ItemType, string> items = new Dictionary<Exiled.API.Enums.ItemType, string>()
 		{
-			{ ItemType.Ammo556, "556 Ammo" },
-			{ ItemType.Ammo762, "762 Ammo" },
-			{ ItemType.Ammo9mm, "9mm Ammo" },
-			{ ItemType.GrenadeFlash, "Flashbang" },
-			{ ItemType.GrenadeFrag, "Grenade" },
-			{ ItemType.GunCOM15, "COM-15" },
-			{ ItemType.GunE11SR, "Epsilon 11 Rifle" },
-			{ ItemType.GunLogicer, "Logicer" },
-			{ ItemType.GunMP7, "MP7" },
-			{ ItemType.GunProject90, "P90" },
-			{ ItemType.GunUSP, "USP" },
-			{ ItemType.KeycardChaosInsurgency, "Chaos Insurgency Keycard" },
-			{ ItemType.KeycardContainmentEngineer, "Containment Engineer Keycard" },
-			{ ItemType.KeycardFacilityManager, "Facility Manager Keycard" },
-			{ ItemType.KeycardGuard, "Guard Keycard" },
-			{ ItemType.KeycardJanitor, "Janitor Keycard" },
-			{ ItemType.KeycardNTFCommander, "Commander Keycard" },
-			{ ItemType.KeycardNTFLieutenant, "Lieutenant Keycard" },
-			{ ItemType.KeycardO5, "O5 Keycard" },
-			{ ItemType.KeycardScientist, "Scientist Keycard" },
-			{ ItemType.KeycardScientistMajor, "Major Scientist Keycard" },
-			{ ItemType.KeycardSeniorGuard, "Senior Guard Keycard" },
-			{ ItemType.KeycardZoneManager, "Zone Manager Keycard" },
-			{ ItemType.WeaponManagerTablet, "Weapon Manager Tablet" },
-			{ ItemType.SCP018, "SCP-018" },
-			{ ItemType.SCP207, "SCP-207" },
-			{ ItemType.SCP268, "SCP-268" },
-			{ ItemType.SCP500, "SCP-500" }
+			{ Exiled.API.Enums.ItemType.Ammo556X45, "556 Ammo" },
+			{ Exiled.API.Enums.ItemType.Ammo762X39, "762 Ammo" },
+			{ Exiled.API.Enums.ItemType.Ammo9X19, "9mm Ammo" },
+			{ Exiled.API.Enums.ItemType.GrenadeFlash, "Flashbang" },
+			{ Exiled.API.Enums.ItemType.GrenadeHe, "Grenade" },
+			{ Exiled.API.Enums.ItemType.GunAk, "AK-47" },
+			{ Exiled.API.Enums.ItemType.GunCom15, "COM-15" },
+			{ Exiled.API.Enums.ItemType.GunE11Sr, "Epsilon 11 Rifle" },
+			{ Exiled.API.Enums.ItemType.GunLogicer, "Logicer" },
+			{ Exiled.API.Enums.ItemType.GunRevolver, "Revolver" },
+			{ Exiled.API.Enums.ItemType.GunShotgun, "Shotgun" },
+			{ Exiled.API.Enums.ItemType.KeycardChaosInsurgency, "Chaos Insurgency Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardContainmentEngineer, "Containment Engineer Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardFacilityManager, "Facility Manager Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardGuard, "Guard Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardJanitor, "Janitor Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardNtfCommander, "Commander Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardNtfLieutenant, "Lieutenant Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardNtfOfficer, "Officer Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardO5, "O5 Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardResearchCoordinator, "Research Coordinator Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardScientist, "Scientist Keycard" },
+			{ Exiled.API.Enums.ItemType.KeycardZoneManager, "Zone Manager Keycard" },
+			{ Exiled.API.Enums.ItemType.Scp018, "SCP-018" },
+			{ Exiled.API.Enums.ItemType.Scp207, "SCP-207" },
+			{ Exiled.API.Enums.ItemType.Scp268, "SCP-268" },
+			{ Exiled.API.Enums.ItemType.Scp500, "SCP-500" }
 		};
 
 		public static Dictionary<RoleType, string> roles = new Dictionary<RoleType, string>()
 		{
-			{ RoleType.ChaosInsurgency, "Chaos Insurgency" },
+			{ RoleType.ChaosConscript, "Chaos Conscript" },
+			{ RoleType.ChaosMarauder, "Chaos Marauder" },
+			{ RoleType.ChaosRepressor, "Chaos Repressor" },
+			{ RoleType.ChaosRifleman, "Chaos Rifleman" },
 			{ RoleType.ClassD, "Class-D" },
 			{ RoleType.FacilityGuard, "Facility Guard" },
-			{ RoleType.NtfCadet, "NTF Cadet" },
-			{ RoleType.NtfCommander, "NTF Commander" },
-			{ RoleType.NtfLieutenant, "NTF Lieutenant" },
-			{ RoleType.NtfScientist, "NTF Scientist" },
+			{ RoleType.NtfCaptain, "NTF Captain" },
+			{ RoleType.NtfPrivate, "NTF Private" },
+			{ RoleType.NtfSergeant, "NTF Sergeant" },
+			{ RoleType.NtfSpecialist, "NTF Specialist" },
 			{ RoleType.Scp049, "SCP-049" },
 			{ RoleType.Scp0492, "SCP-049-2" },
 			{ RoleType.Scp079, "SCP-079" },
@@ -56,20 +58,20 @@ namespace SCPDiscord
 			{ RoleType.Scp93989, "SCP-939" }
 		};
 
-		public static Dictionary<GrenadeType, string> grenades = new Dictionary<GrenadeType, string>()
+		public static Dictionary<Exiled.API.Enums.ItemType, string> grenades = new Dictionary<Exiled.API.Enums.ItemType, string>()
 		{
-			{ GrenadeType.FragGrenade, "Granade" },
-			{ GrenadeType.Flashbang, "Flashbang" },
-			{ GrenadeType.Scp018, "SCP-018" }
+			{ Exiled.API.Enums.ItemType.GrenadeHe, "Granade" },
+			{ Exiled.API.Enums.ItemType.GrenadeFlash, "Flashbang" },
+			{ Exiled.API.Enums.ItemType.Scp018, "SCP-018" }
 		};
 
-		public static Dictionary<Scp914.Scp914Knob, string> knobsettings = new Dictionary<Scp914.Scp914Knob, string>()
+		public static Dictionary<Scp914.Scp914KnobSetting, string> knobsettings = new Dictionary<Scp914.Scp914KnobSetting, string>()
 		{
-			{ Scp914.Scp914Knob.Rough, "Rough" },
-			{ Scp914.Scp914Knob.Coarse, "Course" },
-			{ Scp914.Scp914Knob.OneToOne, "1:1" },
-			{ Scp914.Scp914Knob.Fine, "Fine" },
-			{ Scp914.Scp914Knob.VeryFine, "Very Fine" }
+			{ Scp914.Scp914KnobSetting.Rough, "Rough" },
+			{ Scp914.Scp914KnobSetting.Coarse, "Course" },
+			{ Scp914.Scp914KnobSetting.OneToOne, "1:1" },
+			{ Scp914.Scp914KnobSetting.Fine, "Fine" },
+			{ Scp914.Scp914KnobSetting.VeryFine, "Very Fine" }
 		};
 	}
 }
