@@ -76,8 +76,8 @@ namespace SCPDiscord
 			ev = new EventHandlers();
 
 			Exiled.Events.Handlers.Server.WaitingForPlayers += ev.OnWaitingForPlayers;
-			Exiled.Events.Handlers.Server.SendingRemoteAdminCommand += ev.OnRACommand;
-			Exiled.Events.Handlers.Server.SendingConsoleCommand += ev.OnConsoleCommand;
+			//Exiled.Events.Handlers.Server.SendingRemoteAdminCommand += ev.OnRACommand;
+			//Exiled.Events.Handlers.Server.SendingConsoleCommand += ev.OnConsoleCommand;
 			Exiled.Events.Handlers.Server.RoundStarted += ev.OnRoundStart;
 			Exiled.Events.Handlers.Server.RoundEnded += ev.OnRoundEnd;
 			Exiled.Events.Handlers.Server.RestartingRound += ev.OnRoundRestart;
@@ -93,7 +93,8 @@ namespace SCPDiscord
 			Exiled.Events.Handlers.Player.Hurting += ev.OnPlayerHurt;
 			Exiled.Events.Handlers.Player.Died += ev.OnPlayerDeath;
 			Exiled.Events.Handlers.Player.PreAuthenticating += ev.OnPreAuth;
-			Exiled.Events.Handlers.Player.ThrowingGrenade += ev.OnGrenadeThrown;
+			//Exiled.Events.Handlers.Player.ThrowingGrenade += ev.OnGrenadeThrown;
+			Exiled.Events.Handlers.Player.ThrowingItem += ev.OnGrenadeThrown;
 			Exiled.Events.Handlers.Player.ChangingGroup += ev.OnSetGroup;
 			Exiled.Events.Handlers.Player.EnteringPocketDimension += ev.OnPocketDimensionEnter;
 			Exiled.Events.Handlers.Player.EscapingPocketDimension += ev.OnPocketDimensionEscape;
@@ -111,8 +112,8 @@ namespace SCPDiscord
 			base.OnDisabled();
 
 			Exiled.Events.Handlers.Server.WaitingForPlayers -= ev.OnWaitingForPlayers;
-			Exiled.Events.Handlers.Server.SendingRemoteAdminCommand -= ev.OnRACommand;
-			Exiled.Events.Handlers.Server.SendingConsoleCommand -= ev.OnConsoleCommand;
+			//Exiled.Events.Handlers.Server.SendingRemoteAdminCommand -= ev.OnRACommand;
+			//Exiled.Events.Handlers.Server.SendingConsoleCommand -= ev.OnConsoleCommand;
 			Exiled.Events.Handlers.Server.RoundStarted -= ev.OnRoundStart;
 			Exiled.Events.Handlers.Server.RoundEnded -= ev.OnRoundEnd;
 			Exiled.Events.Handlers.Server.RestartingRound -= ev.OnRoundRestart;
@@ -128,7 +129,8 @@ namespace SCPDiscord
 			Exiled.Events.Handlers.Player.Hurting -= ev.OnPlayerHurt;
 			Exiled.Events.Handlers.Player.Died -= ev.OnPlayerDeath;
 			Exiled.Events.Handlers.Player.PreAuthenticating -= ev.OnPreAuth;
-			Exiled.Events.Handlers.Player.ThrowingGrenade -= ev.OnGrenadeThrown;
+			//Exiled.Events.Handlers.Player.ThrowingGrenade -= ev.OnGrenadeThrown;
+			Exiled.Events.Handlers.Player.ThrowingItem -= ev.OnGrenadeThrown;
 			Exiled.Events.Handlers.Player.ChangingGroup -= ev.OnSetGroup;
 			Exiled.Events.Handlers.Player.EnteringPocketDimension -= ev.OnPocketDimensionEnter;
 			Exiled.Events.Handlers.Player.EscapingPocketDimension -= ev.OnPocketDimensionEscape;

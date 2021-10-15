@@ -7,17 +7,18 @@ namespace SCPDiscord
 	{
 		public static Dictionary<ItemType, string> items = new Dictionary<ItemType, string>()
 		{
-			{ ItemType.Ammo556, "556 Ammo" },
-			{ ItemType.Ammo762, "762 Ammo" },
-			{ ItemType.Ammo9mm, "9mm Ammo" },
+			{ ItemType.Ammo556x45, "556 Ammo" },
+			{ ItemType.Ammo762x39, "762 Ammo" },
+			{ ItemType.Ammo9x19, "9mm Ammo" },
 			{ ItemType.GrenadeFlash, "Flashbang" },
-			{ ItemType.GrenadeFrag, "Grenade" },
+			{ ItemType.GrenadeHE, "Grenade" },
+			{ ItemType.GunAK, "AK-47" },
 			{ ItemType.GunCOM15, "COM-15" },
+			{ ItemType.GunCOM18, "COM-18" },
 			{ ItemType.GunE11SR, "Epsilon 11 Rifle" },
 			{ ItemType.GunLogicer, "Logicer" },
-			{ ItemType.GunMP7, "MP7" },
-			{ ItemType.GunProject90, "P90" },
-			{ ItemType.GunUSP, "USP" },
+			{ ItemType.GunRevolver, "Revolver" },
+			{ ItemType.GunShotgun, "Shotgun" },
 			{ ItemType.KeycardChaosInsurgency, "Chaos Insurgency Keycard" },
 			{ ItemType.KeycardContainmentEngineer, "Containment Engineer Keycard" },
 			{ ItemType.KeycardFacilityManager, "Facility Manager Keycard" },
@@ -25,12 +26,11 @@ namespace SCPDiscord
 			{ ItemType.KeycardJanitor, "Janitor Keycard" },
 			{ ItemType.KeycardNTFCommander, "Commander Keycard" },
 			{ ItemType.KeycardNTFLieutenant, "Lieutenant Keycard" },
+			{ ItemType.KeycardNTFOfficer, "Officer Keycard" },
 			{ ItemType.KeycardO5, "O5 Keycard" },
+			{ ItemType.KeycardResearchCoordinator, "Research Coordinator Keycard" },
 			{ ItemType.KeycardScientist, "Scientist Keycard" },
-			{ ItemType.KeycardScientistMajor, "Major Scientist Keycard" },
-			{ ItemType.KeycardSeniorGuard, "Senior Guard Keycard" },
 			{ ItemType.KeycardZoneManager, "Zone Manager Keycard" },
-			{ ItemType.WeaponManagerTablet, "Weapon Manager Tablet" },
 			{ ItemType.SCP018, "SCP-018" },
 			{ ItemType.SCP207, "SCP-207" },
 			{ ItemType.SCP268, "SCP-268" },
@@ -39,13 +39,16 @@ namespace SCPDiscord
 
 		public static Dictionary<RoleType, string> roles = new Dictionary<RoleType, string>()
 		{
-			{ RoleType.ChaosInsurgency, "Chaos Insurgency" },
+			{ RoleType.ChaosConscript, "Chaos Conscript" },
+			{ RoleType.ChaosMarauder, "Chaos Marauder" },
+			{ RoleType.ChaosRepressor, "Chaos Repressor" },
+			{ RoleType.ChaosRifleman, "Chaos Rifleman" },
 			{ RoleType.ClassD, "Class-D" },
 			{ RoleType.FacilityGuard, "Facility Guard" },
-			{ RoleType.NtfCadet, "NTF Cadet" },
-			{ RoleType.NtfCommander, "NTF Commander" },
-			{ RoleType.NtfLieutenant, "NTF Lieutenant" },
-			{ RoleType.NtfScientist, "NTF Scientist" },
+			{ RoleType.NtfCaptain, "NTF Captain" },
+			{ RoleType.NtfPrivate, "NTF Private" },
+			{ RoleType.NtfSergeant, "NTF Sergeant" },
+			{ RoleType.NtfSpecialist, "NTF Specialist" },
 			{ RoleType.Scp049, "SCP-049" },
 			{ RoleType.Scp0492, "SCP-049-2" },
 			{ RoleType.Scp079, "SCP-079" },
@@ -56,20 +59,20 @@ namespace SCPDiscord
 			{ RoleType.Scp93989, "SCP-939" }
 		};
 
-		public static Dictionary<GrenadeType, string> grenades = new Dictionary<GrenadeType, string>()
+		public static Dictionary<ItemType, string> grenades = new Dictionary<ItemType, string>()
 		{
-			{ GrenadeType.FragGrenade, "Granade" },
-			{ GrenadeType.Flashbang, "Flashbang" },
-			{ GrenadeType.Scp018, "SCP-018" }
+			{ ItemType.GrenadeHE, "Granade" },
+			{ ItemType.GrenadeFlash, "Flashbang" },
+			{ ItemType.SCP018, "SCP-018" }
 		};
 
-		public static Dictionary<Scp914.Scp914Knob, string> knobsettings = new Dictionary<Scp914.Scp914Knob, string>()
+		public static Dictionary<Scp914.Scp914KnobSetting, string> knobsettings = new Dictionary<Scp914.Scp914KnobSetting, string>()
 		{
-			{ Scp914.Scp914Knob.Rough, "Rough" },
-			{ Scp914.Scp914Knob.Coarse, "Course" },
-			{ Scp914.Scp914Knob.OneToOne, "1:1" },
-			{ Scp914.Scp914Knob.Fine, "Fine" },
-			{ Scp914.Scp914Knob.VeryFine, "Very Fine" }
+			{ Scp914.Scp914KnobSetting.Rough, "Rough" },
+			{ Scp914.Scp914KnobSetting.Coarse, "Course" },
+			{ Scp914.Scp914KnobSetting.OneToOne, "1:1" },
+			{ Scp914.Scp914KnobSetting.Fine, "Fine" },
+			{ Scp914.Scp914KnobSetting.VeryFine, "Very Fine" }
 		};
 	}
 }

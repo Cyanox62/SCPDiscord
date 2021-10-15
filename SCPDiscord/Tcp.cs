@@ -64,6 +64,8 @@ namespace SCPDiscord
 					socket.Receive(a);
 					JObject o = (JObject)JToken.FromObject(JsonConvert.DeserializeObject(Encoding.UTF8.GetString(a)));
 
+					if (o == null) continue;
+
 					CommandHandler.HandleCommand(o);
 				}
 				catch (Exception x)
