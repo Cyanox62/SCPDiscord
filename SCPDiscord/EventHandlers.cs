@@ -239,9 +239,6 @@ namespace SCPDiscord
 				else if (type == DamageTypes.Nuke) data.eventName += "Nuke";
 				else if (type == DamageTypes.Pocket) data.eventName += "Pocket";
 				else if (type == DamageTypes.Recontainment) data.eventName += "Recont";
-
-
-				Log.Debug(data.eventName + " - " + data.weapon);
 				tcp.SendData(data);
 			}
 		}
