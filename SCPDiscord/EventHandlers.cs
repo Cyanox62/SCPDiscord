@@ -120,32 +120,109 @@ namespace SCPDiscord
 			}
 		}
 
+		//Untested: Recontainment, RagdollLess, FriendlyFireDetector, Flying, Contain
+		//Unfixable: Hemorrhage
+		public enum DamageTypes
+		{
+			None,
+			Unknown,
+			AK,
+			Asphyxiation,
+			Bleeding,
+			Com15,
+			Com18,
+			Contain,
+			CrossVec,
+			Decont,
+			E11SR,
+			Falldown,
+			Flying,
+			FriendlyFireDetector,
+			FSP9,
+			Grenade,
+			Hemorrhage,
+			Logicer,
+			Lure,
+			MicroHID,
+			Nuke,
+			Pocket,
+			Poison,
+			RagdollLess,
+			Recontainment,
+			Revolver,
+			Scp018,
+			Scp049,
+			Scp0492,
+			Scp096,
+			Scp096Charge,
+			Scp096Pry,
+			Scp106,
+			Scp173,
+			Scp207,
+			Scp939,
+			Shotgun,
+			Tesla,
+			Wall
+		}
+
+		//Returns the most likely applicable damage type for the damage handler given
+		public DamageTypes ParseHandler(PlayerStatsSystem.DamageHandlerBase d)
+		{
+			if (d.ServerLogsText == null) return DamageTypes.None;
+			if (d.ServerLogsText.Contains("Micro H.I.D.")) return DamageTypes.MicroHID;
+			if (d.ServerLogsText.Contains("Fall damage")) return DamageTypes.Falldown;
+			if (d.ServerLogsText.Contains("Crushed.")) return DamageTypes.Wall;
+			if (d.ServerLogsText.Contains("SCP-207")) return DamageTypes.Scp207;
+			if (d.ServerLogsText.Contains("SCP-096's charge")) return DamageTypes.Scp096Charge;
+			if (d.ServerLogsText.Contains("Melted by a highly corrosive substance")) return DamageTypes.Decont;
+			if (d.ServerLogsText.Contains("Tried to pass through a gate being breached by SCP-096")) return DamageTypes.Scp096Pry;
+			if (d.ServerLogsText.Contains("Got slapped by SCP-096")) return DamageTypes.Scp096;
+			if (d.ServerLogsText.Contains("SCP-018")) return DamageTypes.Scp018;
+			if (d.ServerLogsText.Contains("Scp0492")) return DamageTypes.Scp0492;
+			if (d.ServerLogsText.Contains("bait for SCP-106")) return DamageTypes.Lure;
+			if (d.ServerLogsText.Contains("Died to alpha warhead")) return DamageTypes.Nuke;
+			if (d.ServerLogsText.Contains("Friendly Fire")) return DamageTypes.FriendlyFireDetector;
+			if (d.ServerLogsText.Contains("Asphyxiated")) return DamageTypes.Asphyxiation;
+			if (d.ServerLogsText.Contains("GunCrossvec")) return DamageTypes.CrossVec;
+			if (d.ServerLogsText.Contains("GunCOM18")) return DamageTypes.Com18;
+			if (d.ServerLogsText.Contains("GunCOM15")) return DamageTypes.Com15;
+			if (d.ServerLogsText.Contains("GunShotgun")) return DamageTypes.Shotgun;
+			if (d.ServerLogsText.Contains("Explosion.")) return DamageTypes.Grenade;
+			foreach (DamageTypes dmgtyp in DamageTypes.GetValues(typeof(DamageTypes)))
+			{
+				if (d.ServerLogsText.Contains(dmgtyp.ToString())) return dmgtyp;
+			}
+			return DamageTypes.Unknown;
+		}
+
 		public void OnPlayerHurt(HurtingEventArgs ev)
 		{
+			DamageTypes damageType = ParseHandler(ev.DamageHandler);
 			tcp.SendData(new PlayerDamage
 			{
 				eventName = "PlayerHurt",
 				victim = PlyToUser(ev.Target),
-				attacker = PlyToUser(ev.Attacker),
+				attacker = ev.Attacker == null ? null : PlyToUser(ev.Attacker),
 				damage = (int)ev.Amount,
-				weapon = ev.DamageType.ToString()
+				weapon = damageType.ToString()
 			});
 		}
 
 		public void OnPlayerDeath(DiedEventArgs ev)
 		{
-			if (ev.Target.Role != RoleType.Spectator)
+			DamageTypes damageType = ParseHandler(ev.DamageHandler);
+			if (ev.Target.IsConnected)
 			{
 				PlayerDamage data = new PlayerDamage
 				{
 					eventName = "PlayerDeath",
 					victim = PlyToUser(ev.Target),
-					attacker = PlyToUser(ev.Killer),
-					damage = (int)ev.HitInformations.Amount,
-					weapon = ev.HitInformations.Tool.ToString()
+					attacker = ev.Killer == null ? null : PlyToUser(ev.Killer),
+					damage = (int)(-1),
+					weapon = damageType.ToString()
 				};
 
-				DamageTypes.DamageType type = ev.HitInformations.Tool;
+				DamageTypes type = damageType;
 				if (type == DamageTypes.Tesla) data.eventName += "Tesla";
 				else if (type == DamageTypes.Decont) data.eventName += "Decont";
 				else if (type == DamageTypes.Falldown) data.eventName += "Fall";
@@ -155,6 +232,8 @@ namespace SCPDiscord
 				else if (type == DamageTypes.Pocket) data.eventName += "Pocket";
 				else if (type == DamageTypes.Recontainment) data.eventName += "Recont";
 
+
+				Log.Debug(data.eventName + " - " + data.weapon);
 				tcp.SendData(data);
 			}
 		}
