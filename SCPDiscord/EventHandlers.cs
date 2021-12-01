@@ -205,6 +205,7 @@ namespace SCPDiscord
 
 		public void OnPlayerHurt(HurtingEventArgs ev)
 		{
+			if (ev.Target == null) return;
 			DamageTypes damageType = ParseHandler(ev.DamageHandler);
 			tcp.SendData(new PlayerDamage
 			{
