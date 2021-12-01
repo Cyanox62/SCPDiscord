@@ -16,19 +16,27 @@ namespace SCPDiscord
 
 		internal static bool silentRestart;
 
+		internal bool firstStart = false;
+
 		private Dictionary<Exiled.API.Features.Player, RoleType> roles = new Dictionary<Exiled.API.Features.Player, RoleType>();
 
 		public EventHandlers()
 		{
 			//Configs.ReloadConfigs();
 
-			tcp = new Tcp(SCPDiscord.instance.Config.Address, SCPDiscord.instance.Config.Port);
-			tcp.Init();
+			//tcp = new Tcp(SCPDiscord.instance.Config.Address, SCPDiscord.instance.Config.Port);
+			//tcp.Init();
 		}
 
 		public void OnWaitingForPlayers()
 		{
 			//Configs.ReloadConfigs();
+			if (!firstStart)
+            {
+				tcp = new Tcp(SCPDiscord.instance.Config.Address, SCPDiscord.instance.Config.Port);
+				tcp.Init();
+				firstStart = true;
+			}
 
 			tcp.SendData(new Generic
 			{
