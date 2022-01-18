@@ -1,4 +1,5 @@
 ﻿using Exiled.API.Features;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +9,7 @@ namespace SCPDiscord
 {
 	public class SCPDiscord : Plugin<Config>
 	{
-		public static List<string> setRoleGroups = new List<string>()
+		/*public static List<string> setRoleGroups = new List<string>()
 		{
 			"patron1",
 			"patron2",
@@ -51,7 +52,7 @@ namespace SCPDiscord
 					return;
 				}
 			}
-		}
+		}*/
 
 		public static string basePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
 			+ Path.DirectorySeparatorChar + "SCP Secret Laboratory"
@@ -66,6 +67,8 @@ namespace SCPDiscord
 
 		private EventHandlers ev;
 
+		private Harmony hInstance;
+
 		public override void OnEnabled()
 		{
 			base.OnEnabled();
@@ -74,6 +77,9 @@ namespace SCPDiscord
 
 			instance = this;
 			ev = new EventHandlers();
+
+			hInstance = new Harmony("cyan.scpdiscord");
+			hInstance.PatchAll();
 
 			Exiled.Events.Handlers.Server.WaitingForPlayers += ev.OnWaitingForPlayers;
 			//Exiled.Events.Handlers.Server.SendingRemoteAdminCommand += ev.OnRACommand;
@@ -111,6 +117,9 @@ namespace SCPDiscord
 		{
 			base.OnDisabled();
 
+			hInstance.UnpatchAll(hInstance.Id);
+			hInstance = null;
+
 			Exiled.Events.Handlers.Server.WaitingForPlayers -= ev.OnWaitingForPlayers;
 			//Exiled.Events.Handlers.Server.SendingRemoteAdminCommand -= ev.OnRACommand;
 			//Exiled.Events.Handlers.Server.SendingConsoleCommand -= ev.OnConsoleCommand;
@@ -141,6 +150,8 @@ namespace SCPDiscord
 			Exiled.Events.Handlers.Scp079.InteractingTesla -= ev.OnScp079TriggerTesla;
 
 			Exiled.Events.Handlers.Scp106.Containing -= ev.OnScp106Contain;
+
+			ev = null;
 		}
 
 		public override string Name => "ScpDiscord";

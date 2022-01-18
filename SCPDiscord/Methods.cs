@@ -4,7 +4,7 @@ namespace SCPDiscord
 {
 	partial class EventHandlers
 	{
-		private User PlyToUser(Exiled.API.Features.Player player)
+		internal static User PlyToUser(Exiled.API.Features.Player player)
 		{
 			return new User
 			{

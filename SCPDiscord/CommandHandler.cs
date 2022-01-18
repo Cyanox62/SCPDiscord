@@ -27,7 +27,7 @@ namespace SCPDiscord
 				{
 					EventHandlers.tcp.SendData(new Update());
 				}
-				else if (type == "ROLESYNC")
+				/*else if (type == "ROLESYNC")
 				{
 					Log.Warn(o);
 
@@ -88,7 +88,7 @@ namespace SCPDiscord
 					{
 						SCPDiscord.VerifyReservedSlot(userid);
 					}
-				}
+				}*/
 				else if (type == "COMMAND")
 				{
 					GameCore.Console.singleton.TypeCommand((string)o["command"]);

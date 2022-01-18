@@ -206,7 +206,7 @@ namespace SCPDiscord
 		public void OnPlayerHurt(HurtingEventArgs ev)
 		{
 			if (ev.Target == null) return;
-			DamageTypes damageType = ParseHandler(ev.DamageHandler);
+			DamageTypes damageType = ParseHandler(ev.Handler.Base);
 			tcp.SendData(new PlayerDamage
 			{
 				eventName = "PlayerHurt",
@@ -219,7 +219,7 @@ namespace SCPDiscord
 
 		public void OnPlayerDeath(DiedEventArgs ev)
 		{
-			DamageTypes damageType = ParseHandler(ev.DamageHandler);
+			DamageTypes damageType = ParseHandler(ev.Handler.Base);
 			if (ev.Target.IsConnected)
 			{
 				PlayerDamage data = new PlayerDamage
@@ -280,15 +280,6 @@ namespace SCPDiscord
 		//		},
 		//		command = cmd
 		//	});
-
-		//	cmd = cmd.ToLower();
-		//	if ((cmd == "silentrestart" || cmd == "sr") && ev.Sender.CheckPermission("scpd.sr"))
-		//	{
-		//		ev.IsAllowed = false;
-		//		silentRestart = !silentRestart;
-		//		ev.Sender.RemoteAdminMessage(silentRestart ? "Server set to silently restart next round." : "Server silent restart cancelled.", true);
-		//	}
-		//}
 
 		//public void OnConsoleCommand(SendingConsoleCommandEventArgs ev)
 		//{
