@@ -11,9 +11,9 @@ namespace SCPDiscord.Patches
 	{
 		public static void Prefix(string q, CommandSender sender)
 		{
-			if (q != "REQUEST_DATA")
+			if (!q.Contains("SILENT"))
 			{
-				Log.Warn(Exiled.API.Features.Player.Get(sender).Nickname + " called: " + q);
+				//Log.Warn(Exiled.API.Features.Player.Get(sender).Nickname + " called: " + q);
 				EventHandlers.tcp.SendData(new Command
 				{
 					eventName = "RACommand",
