@@ -91,7 +91,7 @@ namespace SCPDiscord
 				}*/
 				else if (type == "COMMAND")
 				{
-					Log.Warn(o);
+					//Log.Warn(o);
 					//Server.RunCommand($"/{(string)o["command"]}");
 					GameCore.Console.singleton.TypeCommand($"/{(string)o["command"]}");
 				}
