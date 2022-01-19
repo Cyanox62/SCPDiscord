@@ -17,7 +17,7 @@ namespace SCPDiscord.Patches
 				EventHandlers.tcp.SendData(new Command
 				{
 					eventName = "RACommand",
-					sender = sender != null ? EventHandlers.PlyToUser(Exiled.API.Features.Player.Get(sender)) : new User()
+					sender = sender != null && sender.SenderId != "GAME CONSOLE" ? EventHandlers.PlyToUser(Exiled.API.Features.Player.Get(sender)) : new User()
 					{
 						name = "Server",
 						userid = ""

@@ -91,7 +91,9 @@ namespace SCPDiscord
 				}*/
 				else if (type == "COMMAND")
 				{
-					GameCore.Console.singleton.TypeCommand((string)o["command"]);
+					Log.Warn(o);
+					//Server.RunCommand($"/{(string)o["command"]}");
+					GameCore.Console.singleton.TypeCommand($"/{(string)o["command"]}");
 				}
 				else if (type == "BAN")
 				{
@@ -258,7 +260,7 @@ namespace SCPDiscord
 			}
 			catch (Exception x)
 			{
-				Log.Error("SCPDiscord handle command error: " + x.Message);
+				Log.Error("SCPDiscord handle command error: " + x.Message + "\n" + x.StackTrace);
 			}
 		}
 	}
