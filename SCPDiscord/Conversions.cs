@@ -34,7 +34,11 @@ namespace SCPDiscord
 			{ ItemType.SCP018, "SCP-018" },
 			{ ItemType.SCP207, "SCP-207" },
 			{ ItemType.SCP268, "SCP-268" },
-			{ ItemType.SCP500, "SCP-500" }
+			{ ItemType.SCP500, "SCP-500" },
+			{ ItemType.SCP2176, "SCP-2176" },
+			{ ItemType.SCP244a, "SCP-244-A" },
+			{ ItemType.SCP244b, "SCP-244-B" },
+			{ ItemType.SCP330, "SCP-330" }
 		};
 
 		public static Dictionary<RoleType, string> roles = new Dictionary<RoleType, string>()
