@@ -375,12 +375,12 @@ namespace SCPDiscord
 		{
 			if (ev.Player != null)
 			{
-							tcp.SendData(new PlayerParam
-			{
-				eventName = "SetGroup",
-				player = PlyToUser(ev.Player),
-				param = ev.NewGroup.BadgeText
-			});
+				tcp.SendData(new PlayerParam
+				{
+					eventName = "SetGroup",
+					player = PlyToUser(ev.Player),
+					param = ev.NewGroup != null ? ev.NewGroup.BadgeText : "Unknown"
+				});
 			}
 		}
 
