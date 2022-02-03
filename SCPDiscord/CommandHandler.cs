@@ -27,68 +27,6 @@ namespace SCPDiscord
 				{
 					EventHandlers.tcp.SendData(new Update());
 				}
-				/*else if (type == "ROLESYNC")
-				{
-					Log.Warn(o);
-
-					string userid = (string)o["userid"];
-
-					if (o["group"] == null)
-					{
-						Log.Debug($"No role sync found for {userid}");
-						SCPDiscord.VerifyReservedSlot(userid);
-						return;
-					}
-
-					string group = (string)o["group"];
-
-					UserGroup userGroup = ServerStatic.PermissionsHandler.GetGroup(group);
-					if (userGroup == null)
-					{
-						Log.Error($"Attempted to assign invalid user group {group} to {userid}");
-						return;
-					}
-
-					Player player = Player.Get(userid);
-					if (player == null)
-					{
-						Log.Error($"Error assigning user group to {userid}, player not found.");
-						return;
-					}
-
-					if (SCPDiscord.setRoleGroups.Contains(group))
-					{
-						Log.Debug($"Assigning role: {userGroup} to {userid}.");
-						player.Group = userGroup;
-					}
-
-					string tag = (string)o["tag"];
-					if (SCPDiscord.setTagGroups.Contains(group) && tag != null)
-					{
-						Log.Debug($"Changing tag of {userid} to {tag}.");
-						player.RankName = tag;
-					}
-
-					if (SCPDiscord.reservedSlotGroups.Contains(group))
-					{
-						// grant reserved slot
-						Log.Debug("Player has necessary rank for reserved slot, checking...");
-						List<string> lines = File.ReadAllLines(SCPDiscord.reservedSlots).ToList();
-						if (!lines.Contains(userid))
-						{
-							Log.Debug("Reserved slot not found, adding player...");
-							lines.Add(userid);
-							File.WriteAllLines(SCPDiscord.reservedSlots, lines);
-							// This only reloads the slots on the current server, change this to reload on every server?
-							// Might not work
-							ReservedSlot.Reload();
-						}
-					}
-					else
-					{
-						SCPDiscord.VerifyReservedSlot(userid);
-					}
-				}*/
 				else if (type == "COMMAND")
 				{
 					//Log.Warn(o);
