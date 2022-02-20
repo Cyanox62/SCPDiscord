@@ -11,7 +11,7 @@ namespace SCPDiscord.Patches
 	{
 		public static void Prefix(string q, CommandSender sender)
 		{
-			if (!q.Contains("SILENT"))
+			if (q != "$0 1")
 			{
 				//Log.Warn(Exiled.API.Features.Player.Get(sender).Nickname + " called: " + q);
 				EventHandlers.tcp.SendData(new Command
