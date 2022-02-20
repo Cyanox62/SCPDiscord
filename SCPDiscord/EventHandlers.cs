@@ -47,7 +47,7 @@ namespace SCPDiscord
 		public void OnRoundStart()
 		{
 			roles.Clear();
-
+			decontaminated = false;
 			tcp.SendData(new Generic
 			{
 				eventName = "RoundStart",
@@ -66,11 +66,6 @@ namespace SCPDiscord
 
 		public void OnPlayerVerified(VerifiedEventArgs ev)
 		{
-			Timing.CallDelayed(1f, () => tcp.SendData(new RoleSync
-			{
-				userid = ev.Player.UserId
-			}));
-
 			tcp.SendData(new PlayerParam
 			{
 				eventName = "PlayerJoin",
@@ -244,8 +239,12 @@ namespace SCPDiscord
 			}
 		}
 
+		bool decontaminated = false;
+
 		public void OnDecontamination(DecontaminatingEventArgs ev)
 		{
+			if (decontaminated) return;
+			decontaminated = true;
 			tcp.SendData(new Generic
 			{
 				eventName = "Decontamination"
@@ -305,6 +304,7 @@ namespace SCPDiscord
 
 		public void OnRoundRestart()
 		{
+			decontaminated = false;
 			tcp.SendData(new Generic
 			{
 				eventName = "RoundRestart"
