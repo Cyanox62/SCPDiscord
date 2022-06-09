@@ -44,7 +44,17 @@ namespace SCPDiscord
 		{
 			reconLoop = false;
 			if (tryReconnect) Connect();
-			if (IsConnected()) client.Close();
+			if (IsConnected())
+			{
+				try
+				{
+					client.Close();
+				}
+				catch
+				{
+					Exiled.API.Features.Log.Warn("Forcibly closed TCP connection.");
+				}
+			}
 		}
 
 		private void AttemptConnection()
