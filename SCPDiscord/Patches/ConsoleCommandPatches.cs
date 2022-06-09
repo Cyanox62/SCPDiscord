@@ -14,7 +14,7 @@ namespace SCPDiscord.Patches
 			if (q != "$0 1")
 			{
 				//Log.Warn(Exiled.API.Features.Player.Get(sender).Nickname + " called: " + q);
-				EventHandlers.tcp.SendData(new Command
+				EventHandlers.tcp.WriteStream(new Command
 				{
 					eventName = "RACommand",
 					sender = sender != null && sender.SenderId != "GAME CONSOLE" ? EventHandlers.PlyToUser(Exiled.API.Features.Player.Get(sender)) : new User()

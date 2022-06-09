@@ -25,7 +25,7 @@ namespace SCPDiscord
 				}
 				else if (type == "UPDATE")
 				{
-					EventHandlers.tcp.SendData(new Update());
+					EventHandlers.tcp.WriteStream(new Update());
 				}
 				else if (type == "COMMAND")
 				{
@@ -131,7 +131,7 @@ namespace SCPDiscord
 							ban.success = false;
 						}
 					}
-					EventHandlers.tcp.SendData(ban);
+					EventHandlers.tcp.WriteStream(ban);
 				}
 				else if (type == "KICK")
 				{
@@ -157,7 +157,7 @@ namespace SCPDiscord
 
 						ServerConsole.Disconnect(player.GameObject, (string)o["reason"]);
 					}
-					EventHandlers.tcp.SendData(kick);
+					EventHandlers.tcp.WriteStream(kick);
 				}
 				else if (type == "UNBAN")
 				{
@@ -180,7 +180,7 @@ namespace SCPDiscord
 					if (matchingIPBans.Count == 0 && matchingSteamIDBans.Count == 0)
 					{
 						unban.success = false;
-						EventHandlers.tcp.SendData(unban);
+						EventHandlers.tcp.WriteStream(unban);
 						return;
 					}
 
@@ -193,7 +193,7 @@ namespace SCPDiscord
 					File.WriteAllLines(SCPDiscord.ipBans, ipBans);
 					File.WriteAllLines(SCPDiscord.useridBans, userIDBans);
 
-					EventHandlers.tcp.SendData(unban);
+					EventHandlers.tcp.WriteStream(unban);
 				}
 			}
 			catch (Exception x)

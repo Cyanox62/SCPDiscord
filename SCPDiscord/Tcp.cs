@@ -1,19 +1,19 @@
-﻿using Exiled.API.Features;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SCPDiscord.DataObjects;
+﻿using Newtonsoft.Json;
 using System;
+using System.Buffers.Binary;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
 namespace SCPDiscord
 {
-	class Tcp
+	public class Tcp
 	{
 		private string ip;
 		private int port;
-		private Socket socket;
+		private TcpClient client;
+		private NetworkStream stream;
+		private bool reconLoop;
 
 		public Tcp(string ip, int port)
 		{
@@ -21,34 +21,50 @@ namespace SCPDiscord
 			this.port = port;
 		}
 
-		public void Init()
+		public delegate void MessageReceived(MessageReceivedEventArgs ev);
+		public event MessageReceived onMessageReceived;
+
+		public delegate void Connected();
+		public event Connected onConnected;
+
+		public void Connect()
 		{
+			reconLoop = true;
 			try
 			{
 				new Thread(AttemptConnection).Start();
 			}
 			catch (Exception x)
 			{
-				Log.Warn("Failed to connect to bot.");
+				Exiled.API.Features.Log.Error("Connection thread creation failure.");
 			}
+		}
+
+		public void Disconnect()
+		{
+			reconLoop = false;
+			if (IsConnected()) client.Close();
 		}
 
 		private void AttemptConnection()
 		{
-			while (!IsConnected())
+			while (!IsConnected() && reconLoop)
 			{
+				Exiled.API.Features.Log.Warn("attempting connecting");
 				try
 				{
-					socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-					socket.Connect(ip, port);
+					client = new TcpClient();
+					client.Connect(ip, port);
+					stream = client.GetStream();
+
+					onConnected();
 
 					new Thread(Listen).Start();
-					SendData(new Identify());
 				}
 				catch (Exception x)
 				{
 					// Failed to connect
-					Log.Warn("Failed to connect to SCPDiscord bot, retrying in 10 seconds...");
+					Exiled.API.Features.Log.Error("Failed to connect to host, retrying in 10 seconds...");
 				}
 				Thread.Sleep(10000);
 			}
@@ -56,53 +72,98 @@ namespace SCPDiscord
 
 		private void Listen()
 		{
+			byte[] bytes;
+
 			while (IsConnected())
 			{
-				try
-				{
-					byte[] a = new byte[1000];
-					socket.Receive(a);
-					JObject o = (JObject)JToken.FromObject(JsonConvert.DeserializeObject(Encoding.UTF8.GetString(a)));
+				// Get message size
+				bytes = new byte[8];
+				stream.Read(bytes, 0, 8);
 
-					if (o == null) continue;
+				// Parse big endian
+				int messageSize = (int)BinaryPrimitives.ReadUInt64BigEndian(bytes);
+				int receivedBytes = 0;
 
-					CommandHandler.HandleCommand(o);
-				}
-				catch (Exception x)
+				// Create array for incoming bytes
+				Exiled.API.Features.Log.Error("Incoming bytes: " + messageSize);
+				bytes = new byte[messageSize];
+
+				// While we don't have all the bytes, keep reading
+				while (receivedBytes < messageSize)
 				{
-					Log.Error("SCPDiscord listener error: " + x.Message);
+					// Write to bytes, offset by how much we've already read, total size being the length minus how much we already have read
+					receivedBytes += stream.Read(bytes, receivedBytes, bytes.Length - receivedBytes);
 				}
+
+				// Emit event
+				onMessageReceived(new MessageReceivedEventArgs()
+				{
+					Bytes = bytes,
+					Object = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(bytes))
+				});
 			}
-			new Thread(AttemptConnection).Start();
 		}
 
-		public void SendData(object data)
-		{
-			SendData(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
-		}
+		public void WriteStream(object data) => WriteStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
 
-		public void SendData(byte[] data)
+		public void WriteStream(byte[] bytes)
 		{
 			if (IsConnected())
 			{
-				socket.Send(data);
+				// Create message size header
+				byte[] header = new byte[8];
+				ulong headerSize = Convert.ToUInt64(bytes.Length);
+				BinaryPrimitives.WriteUInt64BigEndian(header, headerSize);
+
+				// Create variables to track the total size and total bytes sent
+				int messageSize = (int)headerSize;
+				int sentBytes = 0;
+
+				Exiled.API.Features.Log.Warn("Writing bytes: " + messageSize);
+
+				// Merge header and data
+				byte[] bytesToWrite = MergeBytes(header, bytes);
+
+				// Continue writing until all data has gone through
+				while (sentBytes < messageSize)
+				{
+					int size = bytesToWrite.Length - sentBytes;
+					stream.Write(bytesToWrite, sentBytes, size);
+					sentBytes += size;
+				}
+
+				Exiled.API.Features.Log.Warn("Finished writing");
 			}
+		}
+
+		private byte[] MergeBytes(byte[] first, byte[] second)
+		{
+			byte[] bytes = new byte[first.Length + second.Length];
+			Buffer.BlockCopy(first, 0, bytes, 0, first.Length);
+			Buffer.BlockCopy(second, 0, bytes, first.Length, second.Length);
+			return bytes;
 		}
 
 		public bool IsConnected()
 		{
-			if (socket == null)
+			if (client == null || client.Client == null)
 			{
 				return false;
 			}
 			try
 			{
-				return !((socket.Poll(1000, SelectMode.SelectRead) && (socket.Available == 0)) || !socket.Connected);
+				return !((client.Client.Poll(1000, SelectMode.SelectRead) && (client.Client.Available == 0)) || !client.Client.Connected);
 			}
-			catch (Exception x)
+			catch
 			{
 				return false;
 			}
 		}
+	}
+
+	public class MessageReceivedEventArgs : EventArgs
+	{
+		public byte[] Bytes { get; set; }
+		public object Object { get; set; }
 	}
 }

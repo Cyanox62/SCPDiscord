@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Exiled.Permissions.Extensions;
 using UnityEngine;
+using Newtonsoft.Json.Linq;
 
 namespace SCPDiscord
 {
@@ -34,21 +35,33 @@ namespace SCPDiscord
 			if (!firstStart)
             {
 				tcp = new Tcp(SCPDiscord.instance.Config.Address, SCPDiscord.instance.Config.Port);
-				tcp.Init();
+				tcp.onMessageReceived += MessageReceived;
+				tcp.onConnected += Connected;
+				tcp.Connect();
 				firstStart = true;
 			}
 
-			tcp.SendData(new Generic
+			tcp.WriteStream(new Generic
 			{
 				eventName = "WaitingForPlayers"
 			});
+		}
+
+		private void MessageReceived(MessageReceivedEventArgs ev)
+		{
+			CommandHandler.HandleCommand((JObject)JToken.FromObject(ev.Object));
+		}
+
+		private void Connected()
+		{
+			tcp.WriteStream(new Identify());
 		}
 
 		public void OnRoundStart()
 		{
 			roles.Clear();
 			decontaminated = false;
-			tcp.SendData(new Generic
+			tcp.WriteStream(new Generic
 			{
 				eventName = "RoundStart",
 				param = Exiled.API.Features.Player.List.Where(x => x.UserId != null).Count().ToString()
@@ -57,7 +70,7 @@ namespace SCPDiscord
 
 		public void OnRoundEnd(RoundEndedEventArgs ev)
 		{
-			tcp.SendData(new Generic
+			tcp.WriteStream(new Generic
 			{
 				eventName = "RoundEnd",
 				param = ((int)(Round.ElapsedTime.TotalSeconds / 60)).ToString()
@@ -66,7 +79,7 @@ namespace SCPDiscord
 
 		public void OnPlayerVerified(VerifiedEventArgs ev)
 		{
-			tcp.SendData(new PlayerParam
+			tcp.WriteStream(new PlayerParam
 			{
 				eventName = "PlayerJoin",
 				player = PlyToUser(ev.Player),
@@ -82,7 +95,7 @@ namespace SCPDiscord
 
 			if (ev.Player.UserId != null)
 			{
-				tcp.SendData(new PlayerParam
+				tcp.WriteStream(new PlayerParam
 				{
 					eventName = "SetClass",
 					player = PlyToUser(ev.Player),
@@ -93,7 +106,7 @@ namespace SCPDiscord
 
 		public void OnDropItem(DroppingItemEventArgs ev)
 		{
-			tcp.SendData(new PlayerParam
+			tcp.WriteStream(new PlayerParam
 			{
 				eventName = "DropItem",
 				player = PlyToUser(ev.Player),
@@ -103,7 +116,7 @@ namespace SCPDiscord
 
 		public void OnPickupItem(PickingUpItemEventArgs ev)
 		{
-			tcp.SendData(new PlayerParam
+			tcp.WriteStream(new PlayerParam
 			{
 				eventName = "PickupItem",
 				player = PlyToUser(ev.Player),
@@ -115,7 +128,7 @@ namespace SCPDiscord
 		{
 			if (ev.Player.UserId != null)
 			{
-				tcp.SendData(new DataObjects.Events.Player
+				tcp.WriteStream(new DataObjects.Events.Player
 				{
 					eventName = "PlayerLeave",
 					player = PlyToUser(ev.Player)
@@ -202,7 +215,7 @@ namespace SCPDiscord
 		{
 			if (ev.Target == null) return;
 			DamageTypes damageType = ParseHandler(ev.Handler.Base);
-			tcp.SendData(new PlayerDamage
+			tcp.WriteStream(new PlayerDamage
 			{
 				eventName = "PlayerHurt",
 				victim = PlyToUser(ev.Target),
@@ -235,7 +248,7 @@ namespace SCPDiscord
 				else if (type == DamageTypes.Nuke) data.eventName += "Nuke";
 				else if (type == DamageTypes.Pocket) data.eventName += "Pocket";
 				else if (type == DamageTypes.Recontainment) data.eventName += "Recont";
-				tcp.SendData(data);
+				tcp.WriteStream(data);
 			}
 		}
 
@@ -245,7 +258,7 @@ namespace SCPDiscord
 		{
 			if (decontaminated) return;
 			decontaminated = true;
-			tcp.SendData(new Generic
+			tcp.WriteStream(new Generic
 			{
 				eventName = "Decontamination"
 			});
@@ -256,7 +269,7 @@ namespace SCPDiscord
 			if (ev.Item.Type == ItemType.GrenadeFlash || ev.Item.Type == ItemType.GrenadeHE 
 				|| ev.Item.Type == ItemType.SCP018)
 			{
-				tcp.SendData(new PlayerParam
+				tcp.WriteStream(new PlayerParam
 				{
 					eventName = "GrenadeThrown",
 					player = PlyToUser(ev.Player),
@@ -269,7 +282,7 @@ namespace SCPDiscord
 		//{
 		//	string cmd = ev.Name;
 		//	foreach (string arg in ev.Arguments) cmd += $" {arg}";
-		//	tcp.SendData(new Command
+		//	tcp.WriteStream(new Command
 		//	{
 		//		eventName = "RACommand",
 		//		sender = ev.Sender != null ? PlyToUser(ev.Sender) : new User
@@ -284,7 +297,7 @@ namespace SCPDiscord
 		//{
 		//	string cmd = ev.Name;
 		//	foreach (string arg in ev.Arguments) cmd += $" {arg}";
-		//	tcp.SendData(new Command
+		//	tcp.WriteStream(new Command
 		//	{
 		//		eventName = "ConsoleCommand",
 		//		sender = PlyToUser(ev.Player),
@@ -294,7 +307,7 @@ namespace SCPDiscord
 
 		public void OnPreAuth(PreAuthenticatingEventArgs ev)
 		{
-			tcp.SendData(new UserId
+			tcp.WriteStream(new UserId
 			{
 				eventName = "PreAuth",
 				userid = ev.UserId,
@@ -305,7 +318,7 @@ namespace SCPDiscord
 		public void OnRoundRestart()
 		{
 			decontaminated = false;
-			tcp.SendData(new Generic
+			tcp.WriteStream(new Generic
 			{
 				eventName = "RoundRestart"
 			});
@@ -322,7 +335,7 @@ namespace SCPDiscord
 
 		public void OnScp079TriggerTesla(InteractingTeslaEventArgs ev)
 		{
-			tcp.SendData(new DataObjects.Events.Player
+			tcp.WriteStream(new DataObjects.Events.Player
 			{
 				eventName = "Scp079TriggerTesla",
 				player = PlyToUser(ev.Player)
@@ -331,7 +344,7 @@ namespace SCPDiscord
 
 		public void OnScp914ChangeKnob(ChangingKnobSettingEventArgs ev)
 		{
-			tcp.SendData(new PlayerParam
+			tcp.WriteStream(new PlayerParam
 			{
 				eventName = "Scp914ChangeKnob",
 				player = PlyToUser(ev.Player),
@@ -341,7 +354,7 @@ namespace SCPDiscord
 
 		public void OnTeamRespawn(RespawningTeamEventArgs ev)
 		{
-			tcp.SendData(new TeamRespawn
+			tcp.WriteStream(new TeamRespawn
 			{
 				eventName = "TeamRespawn",
 				players = Exiled.API.Features.Player.List.Select(x =>
@@ -355,7 +368,7 @@ namespace SCPDiscord
 		public void OnScp106Contain(ContainingEventArgs ev)
 		{
 			// 'player' is the player who hit the button, not 106
-			tcp.SendData(new DataObjects.Events.Player
+			tcp.WriteStream(new DataObjects.Events.Player
 			{
 				eventName = "Scp106Contain",
 				player = PlyToUser(ev.Player)
@@ -364,7 +377,7 @@ namespace SCPDiscord
 
 		public void OnScp914Activation(ActivatingEventArgs ev)
 		{
-			tcp.SendData(new DataObjects.Events.Player
+			tcp.WriteStream(new DataObjects.Events.Player
 			{
 				eventName = "Scp914Activation",
 				player = PlyToUser(ev.Player)
@@ -375,7 +388,7 @@ namespace SCPDiscord
 		{
 			if (ev.Player != null)
 			{
-				tcp.SendData(new PlayerParam
+				tcp.WriteStream(new PlayerParam
 				{
 					eventName = "SetGroup",
 					player = PlyToUser(ev.Player),
@@ -386,7 +399,7 @@ namespace SCPDiscord
 
 		public void OnPocketDimensionEnter(EnteringPocketDimensionEventArgs ev)
 		{
-			tcp.SendData(new DataObjects.Events.Player
+			tcp.WriteStream(new DataObjects.Events.Player
 			{
 				eventName = "PocketDimensionEnter",
 				player = PlyToUser(ev.Player)
@@ -395,7 +408,7 @@ namespace SCPDiscord
 
 		public void OnPocketDimensionEscape(EscapingPocketDimensionEventArgs ev)
 		{
-			tcp.SendData(new DataObjects.Events.Player
+			tcp.WriteStream(new DataObjects.Events.Player
 			{
 				eventName = "PocketDimensionEscape",
 				player = PlyToUser(ev.Player)
