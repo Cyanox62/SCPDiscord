@@ -40,9 +40,10 @@ namespace SCPDiscord
 			}
 		}
 
-		public void Disconnect()
+		public void Disconnect(bool tryReconnect = false)
 		{
 			reconLoop = false;
+			if (tryReconnect) Connect();
 			if (IsConnected()) client.Close();
 		}
 
@@ -50,7 +51,6 @@ namespace SCPDiscord
 		{
 			while (!IsConnected() && reconLoop)
 			{
-				Exiled.API.Features.Log.Warn("attempting connecting");
 				try
 				{
 					client = new TcpClient();
@@ -78,14 +78,14 @@ namespace SCPDiscord
 			{
 				// Get message size
 				bytes = new byte[8];
-				stream.Read(bytes, 0, 8);
+				int size = stream.Read(bytes, 0, 8);
+				if (size == 0) Disconnect(true);
 
 				// Parse big endian
 				int messageSize = (int)BinaryPrimitives.ReadUInt64BigEndian(bytes);
 				int receivedBytes = 0;
 
 				// Create array for incoming bytes
-				Exiled.API.Features.Log.Error("Incoming bytes: " + messageSize);
 				bytes = new byte[messageSize];
 
 				// While we don't have all the bytes, keep reading
@@ -119,8 +119,6 @@ namespace SCPDiscord
 				int messageSize = (int)headerSize;
 				int sentBytes = 0;
 
-				Exiled.API.Features.Log.Warn("Writing bytes: " + messageSize);
-
 				// Merge header and data
 				byte[] bytesToWrite = MergeBytes(header, bytes);
 
@@ -131,8 +129,6 @@ namespace SCPDiscord
 					stream.Write(bytesToWrite, sentBytes, size);
 					sentBytes += size;
 				}
-
-				Exiled.API.Features.Log.Warn("Finished writing");
 			}
 		}
 
