@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Exiled.Permissions.Extensions;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
+using TcpSL;
 
 namespace SCPDiscord
 {
