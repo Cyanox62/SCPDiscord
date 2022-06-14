@@ -109,7 +109,7 @@ namespace SCPDiscord
 				onMessageReceived(new MessageReceivedEventArgs()
 				{
 					Bytes = bytes,
-					Object = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(bytes))
+					Object = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(bytes)) ?? null
 				});
 			}
 		}
