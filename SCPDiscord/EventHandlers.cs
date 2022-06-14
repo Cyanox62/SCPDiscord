@@ -9,6 +9,7 @@ using Exiled.Permissions.Extensions;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using TcpSL;
+using System.Reflection;
 
 namespace SCPDiscord
 {
@@ -35,7 +36,7 @@ namespace SCPDiscord
 			//Configs.ReloadConfigs();
 			if (!firstStart)
             {
-				tcp = new Tcp(SCPDiscord.instance.Config.Address, SCPDiscord.instance.Config.Port);
+				tcp = new Tcp(Assembly.GetExecutingAssembly(), SCPDiscord.instance.Config.Address, SCPDiscord.instance.Config.Port);
 				tcp.onMessageReceived += MessageReceived;
 				tcp.onConnected += Connected;
 				tcp.Connect();
