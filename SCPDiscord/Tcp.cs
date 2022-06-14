@@ -42,6 +42,7 @@ namespace SCPDiscord
 
 		public void Disconnect(bool tryReconnect = false)
 		{
+			Exiled.API.Features.Log.Warn("Disconnecting from host");
 			reconLoop = false;
 			if (tryReconnect) Connect();
 			if (IsConnected())
@@ -88,7 +89,14 @@ namespace SCPDiscord
 			{
 				// Get message size
 				bytes = new byte[8];
-				int size = stream.Read(bytes, 0, 8);
+				int size = 0;
+				try
+				{
+					size = stream.Read(bytes, 0, 8);
+				} catch (Exception x)
+				{
+					Exiled.API.Features.Log.Error(x.Message);
+				}
 				if (size == 0) Disconnect(true);
 
 				// Parse big endian
@@ -133,7 +141,7 @@ namespace SCPDiscord
 				byte[] bytesToWrite = MergeBytes(header, bytes);
 
 				// Continue writing until all data has gone through
-				while (sentBytes < messageSize)
+				while (sentBytes < messageSize && IsConnected())
 				{
 					int size = bytesToWrite.Length - sentBytes;
 					stream.Write(bytesToWrite, sentBytes, size);

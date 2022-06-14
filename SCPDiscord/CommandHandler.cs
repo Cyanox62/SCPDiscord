@@ -21,7 +21,11 @@ namespace SCPDiscord
 				if (type == "IDENT")
 				{
 					if ((string)o["data"] == "PASS") Log.Debug($"Server {ServerConsole.Port} passed identification.");
-					else if ((string)o["data"] == "FAIL") Log.Warn($"Server {ServerConsole.Port} failed identification.");
+					else if ((string)o["data"] == "FAIL")
+					{
+						Log.Warn($"Server {ServerConsole.Port} failed identification.");
+						EventHandlers.tcp.Disconnect();
+					}
 				}
 				else if (type == "UPDATE")
 				{
